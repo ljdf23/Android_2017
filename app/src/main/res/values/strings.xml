@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">CriminalIntent</string>
+    <string formatted="false" name="crime_report">%1s! The crime was discovered on %2s. %3s, and %4s</string>
+</resources>
