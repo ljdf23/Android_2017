@@ -9,8 +9,8 @@ public class CrimeActivity extends SingleFragmentActivity {
     private String TAG = getClass().getSimpleName();
 
     @Override
-    protected CrimeListFragment createFragment() {
-        return new CrimeListFragment();
+    protected CrimeFragment createFragment() {
+        return new CrimeFragment();
     }
 
     @Override

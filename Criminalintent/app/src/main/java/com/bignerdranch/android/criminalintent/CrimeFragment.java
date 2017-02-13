@@ -65,17 +65,17 @@ public class CrimeFragment  extends Fragment {
         });
 
         mDateButton = (Button)view.findViewById(R.id.crime_date);
-        mDateButton.setText(new SimpleDateFormat("EEE, d MMM yyyy").format(mCrime.getDate()));
+       // mDateButton.setText(new SimpleDateFormat("EEE, d MMM yyyy").format(mCrime.getDate()));
 
         mDateButton.setEnabled(false);
 
         mSolvedCheckBox = (CheckBox)view.findViewById(R.id.crime_solved);
-        mSolvedCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                mCrime.setSolved(b);
-            }
-        });
+        //mSolvedCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        //    @Override
+        //    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+        //        mCrime.setSolved(b);
+        //    }
+        //});
 
         return view;
     }
