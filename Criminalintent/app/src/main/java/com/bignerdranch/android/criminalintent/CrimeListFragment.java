@@ -21,6 +21,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 /**
  * Created by schizophrenia on 7/02/17.
@@ -30,6 +31,7 @@ public class CrimeListFragment extends Fragment {
 
     private RecyclerView mCrimeRecyclerView;
     private CrimeAdapter mAdapter;
+    private Unbinder unbinder;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -47,12 +49,38 @@ public class CrimeListFragment extends Fragment {
         //return super.onCreateView(inflater, container, savedInstanceState);
     }
 
+    /**
+     * Why override onResume() to update the RecyclerView and not onStart() ? You cannot assume that
+     your activity will be stopped when another activity is in front of it. If the other activity is transparent,
+     your activity may just be paused. If your activity is paused and your update code is in onStart() ,
+     then the list will not be reloaded. In general, onResume() is the safest place to take action to update a
+     fragment’s view
+     */
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateUI();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        //We have to unbind beacuse the lifeciycle of a fragment//
+        unbinder.unbind();
+    }
+
     private void updateUI() {
         CrimeLab crimeLab = CrimeLab.getInstance(getActivity());
         List<Crime> crimes = crimeLab.getCrimes();
 
-        mAdapter = new CrimeAdapter(crimes);
-        mCrimeRecyclerView.setAdapter(mAdapter);
+        if(mAdapter == null) {
+            mAdapter = new CrimeAdapter(crimes);
+            mCrimeRecyclerView.setAdapter(mAdapter);
+        }
+        else
+        {
+            mAdapter.notifyDataSetChanged();
+        }
     }
 
     //The ViewHolder does one thing: it holds on to a View
@@ -86,7 +114,7 @@ public class CrimeListFragment extends Fragment {
 
             //replace the finviewbyid with butterknife
 
-            ButterKnife.bind(this, itemView);
+            unbinder = ButterKnife.bind(this, itemView);
             itemView.setOnClickListener(this);
         }
 
@@ -104,8 +132,10 @@ public class CrimeListFragment extends Fragment {
             //animation for changed items
             //mAdapter.notifyItemChanged(6);
 
-            Intent intent = new Intent(getActivity(), CrimeActivity.class);
+            Intent intent = CrimeActivity.newIntent(getActivity(), mCrime.getId());
             startActivity(intent);
+            //Intent intent = new Intent(getActivity(), CrimeActivity.class);
+            //startActivity(intent);
         }
     }
 
