@@ -1,5 +1,6 @@
 package com.bignerdranch.android.criminalintent;
 
+import android.app.Activity;
 import android.icu.text.SimpleDateFormat;
 import android.os.Build;
 import android.os.Bundle;
@@ -58,6 +59,7 @@ public class CrimeFragment  extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+        getActivity().setResult(Activity.RESULT_OK);
     }
     public static CrimeFragment newInstance(UUID crimeId) {
         Bundle args = new Bundle();

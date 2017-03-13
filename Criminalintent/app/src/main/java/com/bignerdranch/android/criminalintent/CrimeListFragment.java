@@ -29,9 +29,22 @@ import butterknife.Unbinder;
 
 public class CrimeListFragment extends Fragment {
 
+    private static final int REQUEST_CRIME = 1;
     private RecyclerView mCrimeRecyclerView;
     private CrimeAdapter mAdapter;
     private Unbinder unbinder;
+    private int position=0;
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if(resultCode == REQUEST_CRIME) {
+
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -79,7 +92,7 @@ public class CrimeListFragment extends Fragment {
         }
         else
         {
-            mAdapter.notifyDataSetChanged();
+            mAdapter.notifyItemChanged(position);
         }
     }
 
@@ -132,8 +145,9 @@ public class CrimeListFragment extends Fragment {
             //animation for changed items
             //mAdapter.notifyItemChanged(6);
 
+            position = this.getLayoutPosition();
             Intent intent = CrimeActivity.newIntent(getActivity(), mCrime.getId());
-            startActivity(intent);
+            startActivityForResult(intent, REQUEST_CRIME);
             //Intent intent = new Intent(getActivity(), CrimeActivity.class);
             //startActivity(intent);
         }
