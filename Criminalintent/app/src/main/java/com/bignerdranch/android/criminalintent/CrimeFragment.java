@@ -61,6 +61,7 @@ public class CrimeFragment  extends Fragment {
         unbinder.unbind();
         getActivity().setResult(Activity.RESULT_OK);
     }
+
     public static CrimeFragment newInstance(UUID crimeId) {
         Bundle args = new Bundle();
         args.putSerializable(ARG_CRIME_ID, crimeId);
@@ -81,6 +82,9 @@ public class CrimeFragment  extends Fragment {
          * building block because it expects that it will always be hosted by an activity whose Intent defines an
          * extra named com.bignerdranch.android.criminalintent.crime_id
          */
+
+        //this code es a simple implementation for retrieve parameters, reading from the intent of the activity, it is a simple implementation
+        //but but it means that CrimeFragment, as currently written, cannot be used with just any activity.
 
          // UUID crimeId = (UUID) getActivity()
          //        .getIntent() //The getIntent() method returns the Intent that was used to start CrimeActivity

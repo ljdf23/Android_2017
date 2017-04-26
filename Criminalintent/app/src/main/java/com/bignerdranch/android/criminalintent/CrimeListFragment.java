@@ -53,7 +53,7 @@ public class CrimeListFragment extends Fragment {
 
         //the LayoutManager handles the positioning of items and also defines the scrolling behavior.
 
-        //we will use the LinearLayoutManager , which will position the items in the list vertically
+        //we will use the LinearLayoutManager, which will position the items in the list vertically
         mCrimeRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         updateUI();
@@ -154,9 +154,9 @@ public class CrimeListFragment extends Fragment {
     }
 
     /*
-    * The RecyclerView will communicate with this adapter when a ViewHolder needs to be created or
-    * connected with a Crime object. The RecyclerView itself will not know anything about the Crime
-    * object, but the Adapter will know all of Crime ’s intimate and personal details
+        * The RecyclerView will communicate with this adapter when a ViewHolder needs to be created or
+        * connected with a Crime object. The RecyclerView itself will not know anything about the Crime
+        * object, but the Adapter will know all of Crime ’s intimate and personal details
     */
 
     private class CrimeAdapter extends RecyclerView.Adapter<CrimeHolder> {
@@ -167,9 +167,9 @@ public class CrimeListFragment extends Fragment {
         }
 
         /*
-        * is called by the RecyclerView when it needs a new View to display an item. In
-        * this method, you create the View and wrap it in a ViewHolder .
-        */
+         * is called by the RecyclerView when it needs a new View to display an item. In
+         * this method, you create the View and wrap it in a ViewHolder .
+         */
         @Override
         public CrimeHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
@@ -177,7 +177,9 @@ public class CrimeListFragment extends Fragment {
             return new CrimeHolder(view);
         }
 
-        /*This method will bind a ViewHolder ’s View to my model object*/
+        /*
+            This method will bind a ViewHolder ’s View to my model object
+        */
         @Override
         public void onBindViewHolder(CrimeHolder holder, int position) {
             Crime crime = mCrimes.get(position);

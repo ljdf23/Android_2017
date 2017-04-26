@@ -30,8 +30,9 @@ public class CrimeActivity extends SingleFragmentActivity {
         return CrimeFragment.newInstance(crimeId);
     }
 
-
     public static Intent newIntent(Context packageContext, UUID crimeId) {
+
+        //this is the way to start an activity from a fragment or an activity.
         Intent intent = new Intent(packageContext, CrimeActivity.class);
         intent.putExtra(EXTRA_CRIME_ID, crimeId);
         return intent;
