@@ -8,6 +8,9 @@ import com.bignerdranch.android.criminalintent.Abstract.SingleFragmentActivity;
 
 import java.util.UUID;
 
+
+
+//this class is now replaced by CrimePagerActivity.java
 public class CrimeActivity extends SingleFragmentActivity {
 
     private String TAG = getClass().getSimpleName();

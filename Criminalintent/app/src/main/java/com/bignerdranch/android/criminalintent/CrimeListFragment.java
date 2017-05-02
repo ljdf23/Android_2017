@@ -146,7 +146,10 @@ public class CrimeListFragment extends Fragment {
             //mAdapter.notifyItemChanged(6);
 
             position = this.getLayoutPosition();
-            Intent intent = CrimeActivity.newIntent(getActivity(), mCrime.getId());
+            //Intent intent = CrimeActivity.newIntent(getActivity(), mCrime.getId());
+
+            //We are going to have a viewpager:
+            Intent intent = CrimePagerActivity.newIntent(getActivity(), mCrime.getId());
             startActivityForResult(intent, REQUEST_CRIME);
             //Intent intent = new Intent(getActivity(), CrimeActivity.class);
             //startActivity(intent);
