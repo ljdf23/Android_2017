@@ -1,12 +1,14 @@
 package com.bignerdranch.android.criminalintent;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.icu.text.SimpleDateFormat;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -38,9 +40,14 @@ public class CrimeFragment  extends Fragment {
     @BindView(R.id.crime_title) TextView mTitleField;
     @BindView(R.id.crime_date)  Button mDateButton;
     @BindView(R.id.crime_solved)   CheckBox mSolvedCheckBox;
+    @BindView(R.id.crime_hour) Button mTimeButton;
 
 
     private static final String ARG_CRIME_ID = "crime_id";
+    private static final String DIALOG_DATE = "DialogDate";
+    private static final int REQUEST_DATE = 0;
+    private static final int REQUEST_TIME = 1;
+
     private Unbinder unbinder;
     private Crime mCrime;
 
@@ -68,6 +75,38 @@ public class CrimeFragment  extends Fragment {
         CrimeFragment fragment = new CrimeFragment();
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(resultCode != Activity.RESULT_OK){
+            return;
+        }
+
+        if(requestCode == REQUEST_DATE)
+        {
+            Date date = (Date) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
+
+            mCrime.setDate(date);
+            updateDate();
+        }
+
+        if(requestCode == REQUEST_TIME)
+        {
+            Date date = (Date) data.getSerializableExtra(TimePickerFragment.EXTRA_TIME);
+
+
+            mCrime.setDate(date);
+            updateDate();
+        }
+
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    private void updateDate() {
+        mDateButton.setText(new SimpleDateFormat("EEE, d MMM yyyy hh:mm").format(mCrime.getDate()));
     }
 
     @Override
@@ -126,18 +165,56 @@ public class CrimeFragment  extends Fragment {
         });
 
         //mDateButton = (Button)view.findViewById(R.id.crime_date);
-       // mDateButton.setText(new SimpleDateFormat("EEE, d MMM yyyy").format(mCrime.getDate()));
 
-        mDateButton.setEnabled(false);
+        updateDate();
 
-        //mSolvedCheckBox = (CheckBox)view.findViewById(R.id.crime_solved);
-        //mSolvedCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-        //    @Override
-        //    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-        //        mCrime.setSolved(b);
-        //    }
-        //});
+        mTimeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FragmentManager manager = getFragmentManager();
+                //DatePickerFragment dialog = new DatePickerFragment();
+                TimePickerFragment dialog = TimePickerFragment.newInstance(mCrime.getDate());
+                dialog.setTargetFragment(CrimeFragment.this, REQUEST_DATE);
+                dialog.show(manager, DIALOG_DATE);
+            }
+        });
+
+        // mDateButton.setEnabled(false);
+        mDateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FragmentManager manager = getFragmentManager();
+                //DatePickerFragment dialog = new DatePickerFragment();
+                DatePickerFragment dialog = DatePickerFragment.newInstance(mCrime.getDate());
+
+
+                /**
+                 *
+                 * With activities, you call startActivityForResult(…), and the ActivityManager keeps track of the
+                 parent-child activity relationship. When the child activity dies, the ActivityManager knows which
+                 activity should receive the result.
+
+                 You can create a similar connection by making CrimeFragment the target fragment of
+                 DatePickerFragment.
+
+                 This connection is automatically reestablished after both CrimeFragment and
+                 DatePickerFragment are destroyed and re-created by the OS.
+                 *
+                 */
+                dialog.setTargetFragment(CrimeFragment.this, REQUEST_DATE);
+                dialog.show(manager, DIALOG_DATE);
+            }
+        });
+
+        mSolvedCheckBox = (CheckBox)view.findViewById(R.id.crime_solved);
+        mSolvedCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                mCrime.setSolved(b);
+            }
+        });
 
         return view;
     }
+
 }
