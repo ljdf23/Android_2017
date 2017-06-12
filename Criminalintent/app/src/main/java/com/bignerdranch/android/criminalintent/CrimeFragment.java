@@ -2,7 +2,6 @@ package com.bignerdranch.android.criminalintent;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.icu.text.SimpleDateFormat;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -23,8 +22,12 @@ import android.widget.TextView;
 import com.bignerdranch.android.criminalintent.Model.Crime;
 import com.bignerdranch.android.criminalintent.Model.CrimeLab;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 import butterknife.BindView;
@@ -77,36 +80,37 @@ public class CrimeFragment  extends Fragment {
         return fragment;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(resultCode != Activity.RESULT_OK){
+        if(resultCode != Activity.RESULT_OK) {
             return;
         }
 
-        if(requestCode == REQUEST_DATE)
-        {
+        if(requestCode == REQUEST_DATE) {
             Date date = (Date) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
-
+            date.setHours(mCrime.getDate().getHours());
+            date.setMinutes(mCrime.getDate().getMinutes());
             mCrime.setDate(date);
             updateDate();
         }
 
-        if(requestCode == REQUEST_TIME)
-        {
+        if(requestCode == REQUEST_TIME) {
             Date date = (Date) data.getSerializableExtra(TimePickerFragment.EXTRA_TIME);
-
-
-            mCrime.setDate(date);
-            updateDate();
+            mCrime.getDate().setHours(date.getHours());
+            mCrime.getDate().setMinutes(date.getMinutes());
+            mCrime.setDate(mCrime.getDate());
+            updateTime();
         }
 
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     private void updateDate() {
-        mDateButton.setText(new SimpleDateFormat("EEE, d MMM yyyy hh:mm").format(mCrime.getDate()));
+        mDateButton.setText(new SimpleDateFormat("yyyy-MM-dd").format(mCrime.getDate()));
+    }
+
+    private void updateTime() {
+        mTimeButton.setText(new SimpleDateFormat("HH:mm").format(mCrime.getDate()));
     }
 
     @Override
@@ -127,7 +131,7 @@ public class CrimeFragment  extends Fragment {
 
          // UUID crimeId = (UUID) getActivity()
          //        .getIntent() //The getIntent() method returns the Intent that was used to start CrimeActivity
-         //       .getSerializableExtra(CrimeActivity.EXTRA_CRIME_ID);
+        //       .getSerializableExtra(CrimeActivity.EXTRA_CRIME_ID);
          //mCrime = CrimeLab.getInstance(getActivity()).getCrime(crimeId);
 
 
@@ -135,7 +139,6 @@ public class CrimeFragment  extends Fragment {
         mCrime = CrimeLab.getInstance(getActivity()).getCrime(crimeId);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -167,6 +170,7 @@ public class CrimeFragment  extends Fragment {
         //mDateButton = (Button)view.findViewById(R.id.crime_date);
 
         updateDate();
+        updateTime();
 
         mTimeButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -174,7 +178,7 @@ public class CrimeFragment  extends Fragment {
                 FragmentManager manager = getFragmentManager();
                 //DatePickerFragment dialog = new DatePickerFragment();
                 TimePickerFragment dialog = TimePickerFragment.newInstance(mCrime.getDate());
-                dialog.setTargetFragment(CrimeFragment.this, REQUEST_DATE);
+                dialog.setTargetFragment(CrimeFragment.this, REQUEST_TIME);
                 dialog.show(manager, DIALOG_DATE);
             }
         });
@@ -185,11 +189,15 @@ public class CrimeFragment  extends Fragment {
             public void onClick(View view) {
                 FragmentManager manager = getFragmentManager();
                 //DatePickerFragment dialog = new DatePickerFragment();
-                DatePickerFragment dialog = DatePickerFragment.newInstance(mCrime.getDate());
 
+                //DatePickerFragment dialog = DatePickerFragment.newInstance(mCrime.getDate());
 
-                /**
-                 *
+                //challenge, open activity and contain the datepickerfragment
+                Intent intent = DatePickerActivity.newIntent(getActivity(), mCrime.getDate());
+                startActivityForResult(intent, REQUEST_DATE);
+
+                /*
+                 *9
                  * With activities, you call startActivityForResult(…), and the ActivityManager keeps track of the
                  parent-child activity relationship. When the child activity dies, the ActivityManager knows which
                  activity should receive the result.
@@ -201,8 +209,9 @@ public class CrimeFragment  extends Fragment {
                  DatePickerFragment are destroyed and re-created by the OS.
                  *
                  */
-                dialog.setTargetFragment(CrimeFragment.this, REQUEST_DATE);
-                dialog.show(manager, DIALOG_DATE);
+
+                //dialog.setTargetFragment(CrimeFragment.this, REQUEST_DATE);
+                //dialog.show(manager, DIALOG_DATE);
             }
         });
 

@@ -56,6 +56,8 @@ import com.bignerdranch.android.criminalintent.R;
      */
 //endregion
 
+    //FragMentActivity => support library’s fragment implementation.
+
 public abstract class SingleFragmentActivity extends FragmentActivity {
 
     //If a class includes abstract methods, then the class itself must be declared abstract
